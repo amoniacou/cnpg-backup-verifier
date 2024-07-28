@@ -1,0 +1,9 @@
+apiVersion: cnpg.k8s.amoniac.eu/v1
+kind: BackupVerifier
+metadata:
+  labels:
+    app.kubernetes.io/name: cnpg-backup-verifier
+    app.kubernetes.io/managed-by: kustomize
+  name: backupverifier-sample
+spec:
+  # TODO(user): Add fields here
