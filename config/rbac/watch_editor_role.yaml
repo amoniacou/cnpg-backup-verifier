@@ -1,16 +1,16 @@
-# permissions for end users to edit backupverifiers.
+# permissions for end users to edit watches.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: cnpg-backup-verifier
     app.kubernetes.io/managed-by: kustomize
-  name: backupverifier-editor-role
+  name: watch-editor-role
 rules:
 - apiGroups:
   - backupverifier.cnpg.io
   resources:
-  - backupverifiers
+  - watches
   verbs:
   - create
   - delete
@@ -22,6 +22,6 @@ rules:
 - apiGroups:
   - backupverifier.cnpg.io
   resources:
-  - backupverifiers/status
+  - watches/status
   verbs:
   - get

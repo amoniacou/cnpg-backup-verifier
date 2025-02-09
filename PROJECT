@@ -2,7 +2,7 @@
 # This file is used to track the info used to scaffold your project
 # and allow the plugins properly work.
 # More info: https://book.kubebuilder.io/reference/project-config.html
-domain: k8s.amoniac.eu
+domain: cnpg.io
 layout:
 - go.kubebuilder.io/v4
 projectName: cnpg-backup-verifier
@@ -12,9 +12,25 @@ resources:
     crdVersion: v1
     namespaced: true
   controller: true
-  domain: k8s.amoniac.eu
-  group: cnpg
-  kind: BackupVerifier
+  domain: cnpg.io
+  group: backupverifier
+  kind: CronVerifier
+  path: github.com/amoniacou/cnpg-backup-verifier/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: cnpg.io
+  group: backupverifier
+  kind: VerifyJob
+  path: github.com/amoniacou/cnpg-backup-verifier/api/v1
+  version: v1
+- api:
+    crdVersion: v1
+    namespaced: true
+  domain: cnpg.io
+  group: backupverifier
+  kind: WatchVerifier
   path: github.com/amoniacou/cnpg-backup-verifier/api/v1
   version: v1
 version: "3"

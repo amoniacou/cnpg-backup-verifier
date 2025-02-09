@@ -1,4 +1,6 @@
 ## Append samples of your project ##
 resources:
 - cnpg_v1_backupverifier.yaml
+- backupverifier_v1_verifyjob.yaml
+- backupverifier_v1_watch.yaml
 # +kubebuilder:scaffold:manifestskustomizesamples

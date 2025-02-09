@@ -1,27 +1,23 @@
-# permissions for end users to edit backupverifiers.
+# permissions for end users to view verifyjobs.
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   labels:
     app.kubernetes.io/name: cnpg-backup-verifier
     app.kubernetes.io/managed-by: kustomize
-  name: backupverifier-editor-role
+  name: verifyjob-viewer-role
 rules:
 - apiGroups:
   - backupverifier.cnpg.io
   resources:
-  - backupverifiers
+  - verifyjobs
   verbs:
-  - create
-  - delete
   - get
   - list
-  - patch
-  - update
   - watch
 - apiGroups:
   - backupverifier.cnpg.io
   resources:
-  - backupverifiers/status
+  - verifyjobs/status
   verbs:
   - get

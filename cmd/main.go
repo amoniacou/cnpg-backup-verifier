@@ -21,10 +21,8 @@ import (
 	"flag"
 	"os"
 
-	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
-	// to ensure that exec-entrypoint and run can make use of them.
-	_ "k8s.io/client-go/plugin/pkg/client/auth"
-
+	backupverifierv1 "github.com/amoniacou/cnpg-backup-verifier/api/v1"
+	// +kubebuilder:scaffold:imports
 	"k8s.io/apimachinery/pkg/runtime"
 	utilruntime "k8s.io/apimachinery/pkg/util/runtime"
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
@@ -35,9 +33,13 @@ import (
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 	"sigs.k8s.io/controller-runtime/pkg/webhook"
 
-	cnpgv1 "github.com/amoniacou/cnpg-backup-verifier/api/v1"
+	verifierv1 "github.com/amoniacou/cnpg-backup-verifier/api/v1"
 	"github.com/amoniacou/cnpg-backup-verifier/internal/controller"
-	// +kubebuilder:scaffold:imports
+	cnpgv1 "github.com/cloudnative-pg/cloudnative-pg/api/v1"
+
+	// Import all Kubernetes client auth plugins (e.g. Azure, GCP, OIDC, etc.)
+	// to ensure that exec-entrypoint and run can make use of them.
+	_ "k8s.io/client-go/plugin/pkg/client/auth"
 )
 
 var (
@@ -47,8 +49,9 @@ var (
 
 func init() {
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
-
 	utilruntime.Must(cnpgv1.AddToScheme(scheme))
+	utilruntime.Must(verifierv1.AddToScheme(scheme))
+	utilruntime.Must(backupverifierv1.AddToScheme(scheme))
 	// +kubebuilder:scaffold:scheme
 }
 
@@ -59,6 +62,7 @@ func main() {
 	var secureMetrics bool
 	var enableHTTP2 bool
 	var tlsOpts []func(*tls.Config)
+
 	flag.StringVar(&metricsAddr, "metrics-bind-address", "0", "The address the metrics endpoint binds to. "+
 		"Use :8443 for HTTPS or :8080 for HTTP, or leave as 0 to disable the metrics service.")
 	flag.StringVar(&probeAddr, "health-probe-bind-address", ":8081", "The address the probe endpoint binds to.")
@@ -144,11 +148,11 @@ func main() {
 		os.Exit(1)
 	}
 
-	if err = (&controller.BackupVerifierReconciler{
+	if err = (&controller.CronVerifierReconciler{
 		Client: mgr.GetClient(),
 		Scheme: mgr.GetScheme(),
 	}).SetupWithManager(mgr); err != nil {
-		setupLog.Error(err, "unable to create controller", "controller", "BackupVerifier")
+		setupLog.Error(err, "unable to create controller", "controller", "CronVerifier")
 		os.Exit(1)
 	}
 	// +kubebuilder:scaffold:builder

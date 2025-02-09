@@ -5,9 +5,9 @@ metadata:
   name: manager-role
 rules:
 - apiGroups:
-  - cnpg.k8s.amoniac.eu
+  - backupverifier.cnpg.io
   resources:
-  - backupverifiers
+  - cronverifiers
   verbs:
   - create
   - delete
@@ -17,16 +17,30 @@ rules:
   - update
   - watch
 - apiGroups:
-  - cnpg.k8s.amoniac.eu
+  - backupverifier.cnpg.io
   resources:
-  - backupverifiers/finalizers
+  - cronverifiers/finalizers
   verbs:
   - update
 - apiGroups:
-  - cnpg.k8s.amoniac.eu
+  - backupverifier.cnpg.io
   resources:
-  - backupverifiers/status
+  - cronverifiers/status
   verbs:
   - get
   - patch
   - update
+- apiGroups:
+  - postgresql.cnpg.io
+  resources:
+  - backups
+  - clusters
+  verbs:
+  - get
+  - list
+- apiGroups:
+  - postgresql.cnpg.io
+  resources:
+  - backups/status
+  verbs:
+  - get

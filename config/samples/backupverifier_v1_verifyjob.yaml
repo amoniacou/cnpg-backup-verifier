@@ -1,9 +1,9 @@
 apiVersion: backupverifier.cnpg.io/v1
-kind: CronVerifier
+kind: VerifyJob
 metadata:
   labels:
     app.kubernetes.io/name: cnpg-backup-verifier
     app.kubernetes.io/managed-by: kustomize
-  name: backupverifier-sample
+  name: verifyjob-sample
 spec:
   # TODO(user): Add fields here

@@ -2,7 +2,9 @@
 # since it depends on service name and namespace that are out of this kustomize package.
 # It should be run by config/default
 resources:
-- bases/cnpg.k8s.amoniac.eu_backupverifiers.yaml
+- bases/backupverifier.cnpg.io_backupverifiers.yaml
+- bases/backupverifier.cnpg.io_verifyjobs.yaml
+- bases/backupverifier.cnpg.io_watches.yaml
 # +kubebuilder:scaffold:crdkustomizeresource
 
 patches:

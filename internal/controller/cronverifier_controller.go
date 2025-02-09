@@ -29,37 +29,29 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/predicate"
 	"sigs.k8s.io/controller-runtime/pkg/reconcile"
 
-	cnpgbvv1 "github.com/amoniacou/cnpg-backup-verifier/api/v1"
+	bvv1 "github.com/amoniacou/cnpg-backup-verifier/api/v1"
 	cnpgv1 "github.com/cloudnative-pg/cloudnative-pg/api/v1"
 )
 
-// BackupVerifierReconciler reconciles a BackupVerifier object
-type BackupVerifierReconciler struct {
+// CronVerifierReconciler reconciles a CronVerifier object
+type CronVerifierReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
 }
 
-// +kubebuilder:rbac:groups=cnpg.k8s.amoniac.eu,resources=backupverifiers,verbs=get;list;watch;create;update;patch;delete
-// +kubebuilder:rbac:groups=cnpg.k8s.amoniac.eu,resources=backupverifiers/status,verbs=get;update;patch
-// +kubebuilder:rbac:groups=cnpg.k8s.amoniac.eu,resources=backupverifiers/finalizers,verbs=update
-// +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=clusters,verbs=get;list;watch
-// +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=backups,verbs=get;list;watch
-// +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=backups/status,verbs=get;update;watch
+// +kubebuilder:rbac:groups=backupverifier.cnpg.io,resources=cronverifiers,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups=backupverifier.cnpg.io,resources=cronverifiers/status,verbs=get;update;patch
+// +kubebuilder:rbac:groups=backupverifier.cnpg.io,resources=cronverifiers/finalizers,verbs=update
+// +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=clusters,verbs=get;list
+// +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=backups,verbs=get;list
+// +kubebuilder:rbac:groups=postgresql.cnpg.io,resources=backups/status,verbs=get
 
-// Reconcile is part of the main kubernetes reconciliation loop which aims to
-// move the current state of the cluster closer to the desired state.
-// TODO(user): Modify the Reconcile function to compare the state specified by
-// the BackupVerifier object against the actual cluster state, and then
-// perform operations to make the cluster state reflect the state specified by
-// the user.
-//
-// For more details, check Reconcile and its Result here:
-// - https://pkg.go.dev/sigs.k8s.io/controller-runtime@v0.18.4/pkg/reconcile
-func (r *BackupVerifierReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+// Reconcile function
+func (r *CronVerifierReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	log := log.FromContext(ctx)
 	log.Info("Reconcile for manager started", "manager", req.NamespacedName.Name, "namespace", req.NamespacedName.Namespace)
 
-	var backupVerifier cnpgbvv1.BackupVerifier
+	var backupVerifier bvv1.CronVerifier
 	if err := r.Get(ctx, req.NamespacedName, &backupVerifier); err != nil {
 		log.Error(err, "Unable to fetch backupVerifier entity")
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -79,8 +71,8 @@ func (r *BackupVerifierReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 
 	// check if cluster have a backup section
 	if cluster.Spec.Backup == nil {
-		backupVerifier.Status.State = "stopped"
-		backupVerifier.Status.Reason = "There no backup section in cluster"
+		backupVerifier.Status.Status = bvv1.CronVerifierFailed
+		backupVerifier.Status.ErrorMessage = "There no backup section in cluster"
 		log.Info("No backup section in Postgres cluster")
 		if err := r.Status().Update(ctx, &backupVerifier); err != nil {
 			log.Error(err, "Unable to update status")
@@ -100,9 +92,9 @@ func (r *BackupVerifierReconciler) Reconcile(ctx context.Context, req ctrl.Reque
 }
 
 // SetupWithManager sets up the controller with the Manager.
-func (r *BackupVerifierReconciler) SetupWithManager(mgr ctrl.Manager) error {
+func (r *CronVerifierReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&cnpgbvv1.BackupVerifier{}).
+		For(&bvv1.CronVerifier{}).
 		Watches(
 			&cnpgv1.Cluster{},
 			handler.EnqueueRequestsFromMapFunc(r.requestsForClusterChanges),
@@ -111,7 +103,6 @@ func (r *BackupVerifierReconciler) SetupWithManager(mgr ctrl.Manager) error {
 		Complete(r)
 }
 
-// n
-func (r *BackupVerifierReconciler) requestsForClusterChanges(ctx context.Context, o client.Object) []reconcile.Request {
-
+func (r *CronVerifierReconciler) requestsForClusterChanges(ctx context.Context, o client.Object) []reconcile.Request {
+	return []reconcile.Request{}
 }

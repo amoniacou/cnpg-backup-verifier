@@ -8,7 +8,7 @@ metadata:
   name: backupverifier-viewer-role
 rules:
 - apiGroups:
-  - cnpg.k8s.amoniac.eu
+  - backupverifier.cnpg.io
   resources:
   - backupverifiers
   verbs:
@@ -16,7 +16,7 @@ rules:
   - list
   - watch
 - apiGroups:
-  - cnpg.k8s.amoniac.eu
+  - backupverifier.cnpg.io
   resources:
   - backupverifiers/status
   verbs:

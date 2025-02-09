@@ -4,20 +4,20 @@ kind: CustomResourceDefinition
 metadata:
   annotations:
     controller-gen.kubebuilder.io/version: v0.15.0
-  name: backupverifiers.cnpg.k8s.amoniac.eu
+  name: cronverifiers.backupverifier.cnpg.io
 spec:
-  group: cnpg.k8s.amoniac.eu
+  group: backupverifier.cnpg.io
   names:
-    kind: BackupVerifier
-    listKind: BackupVerifierList
-    plural: backupverifiers
-    singular: backupverifier
+    kind: CronVerifier
+    listKind: CronVerifierList
+    plural: cronverifiers
+    singular: schedule
   scope: Namespaced
   versions:
   - name: v1
     schema:
       openAPIV3Schema:
-        description: BackupVerifier is the Schema for the backupverifiers API
+        description: CronVerifier is the Schema for the backupverifiers API
         properties:
           apiVersion:
             description: |-
@@ -37,7 +37,7 @@ spec:
           metadata:
             type: object
           spec:
-            description: BackupVerifierSpec defines the desired state of BackupVerifier
+            description: CronVerifierSpec defines the desired state of CronVerifier
             properties:
               cluster:
                 description: Cluster is a name of CloudNativePG Cluster which backups
@@ -53,8 +53,13 @@ spec:
             - cluster
             type: object
           status:
-            description: BackupVerifierStatus defines the observed state of BackupVerifier
+            description: CronVerifierStatus defines the observed state of CronVerifier
             properties:
+              reason:
+                description: |-
+                  Reason of state
+                  For example if its stopped we will add info that its stopped due to missing backup section
+                type: string
               state:
                 description: |-
                   What is the state of such verifier.

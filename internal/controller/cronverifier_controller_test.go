@@ -30,7 +30,7 @@ import (
 	cnpgv1 "github.com/amoniacou/cnpg-backup-verifier/api/v1"
 )
 
-var _ = Describe("BackupVerifier Controller", func() {
+var _ = Describe("CronVerifier Controller", func() {
 	Context("When reconciling a resource", func() {
 		const resourceName = "test-resource"
 
@@ -40,13 +40,13 @@ var _ = Describe("BackupVerifier Controller", func() {
 			Name:      resourceName,
 			Namespace: "default", // TODO(user):Modify as needed
 		}
-		backupverifier := &cnpgv1.BackupVerifier{}
+		backupverifier := &cnpgv1.CronVerifier{}
 
 		BeforeEach(func() {
-			By("creating the custom resource for the Kind BackupVerifier")
+			By("creating the custom resource for the Kind CronVerifier")
 			err := k8sClient.Get(ctx, typeNamespacedName, backupverifier)
 			if err != nil && errors.IsNotFound(err) {
-				resource := &cnpgv1.BackupVerifier{
+				resource := &cnpgv1.CronVerifier{
 					ObjectMeta: metav1.ObjectMeta{
 						Name:      resourceName,
 						Namespace: "default",
@@ -59,16 +59,16 @@ var _ = Describe("BackupVerifier Controller", func() {
 
 		AfterEach(func() {
 			// TODO(user): Cleanup logic after each test, like removing the resource instance.
-			resource := &cnpgv1.BackupVerifier{}
+			resource := &cnpgv1.CronVerifier{}
 			err := k8sClient.Get(ctx, typeNamespacedName, resource)
 			Expect(err).NotTo(HaveOccurred())
 
-			By("Cleanup the specific resource instance BackupVerifier")
+			By("Cleanup the specific resource instance CronVerifier")
 			Expect(k8sClient.Delete(ctx, resource)).To(Succeed())
 		})
 		It("should successfully reconcile the resource", func() {
 			By("Reconciling the created resource")
-			controllerReconciler := &BackupVerifierReconciler{
+			controllerReconciler := &CronVerifierReconciler{
 				Client: k8sClient,
 				Scheme: k8sClient.Scheme(),
 			}
